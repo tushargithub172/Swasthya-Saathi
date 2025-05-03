@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Medical Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f6fa;
+            margin: 0;
+            padding: 40px;
+            color: #2c3e50;
+        }
+
+        .report-card {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px 40px;
+        }
+
+        .report-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #157347;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #157347;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li::before {
+            content: "• ";
+            color: #3498db;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .report-section {
+            margin-bottom: 20px;
+        }
+
+        .report-section p {
+            margin: 6px 0;
+            line-height: 1.6;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: #198754;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            background: #146c43;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="report-card">
+        <h1 class="report-title">Medical Report</h1>
+
+        <div class="report-section">
+            <h2>Disease: {{ predicted_disease }}</h2>
+        </div>
+
+        <div class="report-section">
+            <strong>Symptoms:</strong>
+            <ul>
+                {% for s in user_symptoms %}
+                <li>{{ s }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="report-section">
+            <strong>Description:</strong>
+            <p>{{ dis_des }}</p>
+        </div>
+
+        <div class="report-section">
+            <strong>Precautions:</strong>
+            <ul>
+                {% for p in my_precautions %}
+                <li>{{ p }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="report-section">
+            <strong>Medications:</strong>
+            <ul>
+                {% for m in medications %}
+                <li>{{ m }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="report-section">
+            <strong>Recommended Diet:</strong>
+            <ul>
+                {% for d in my_diet %}
+                <li>{{ d }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="report-section">
+            <strong>Workout:</strong>
+            <ul>
+                {% for w in workout %}
+                <li>{{ w }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="report-section">
+            <strong>Emergency Contact:</strong>
+            <p>Call: 108 (or local hospital)</p>
+        </div>
+
+        <!-- PDF Download Button -->
+        <form method="POST" action="/download">
+            <input type="hidden" name="prediction" value="{{ predicted_disease }}">
+            <input type="hidden" name="symptoms" value="{{ user_symptoms|join(', ') }}">
+            <input type="hidden" name="description" value="{{ dis_des }}">
+            <input type="hidden" name="precautions" value="{{ my_precautions|join(', ') }}">
+            <input type="hidden" name="medications" value="{{ medications|join(', ') }}">
+            <input type="hidden" name="diet" value="{{ my_diet|join(', ') }}">
+            <input type="hidden" name="workout" value="{{ workout|join(', ') }}">
+            <button type="submit" class="download-btn">📄 Download PDF Report</button>
+        </form>
+    </div>
+</body>
+
+</html>

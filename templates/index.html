@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Swasthya Saathi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            margin-top: 0;
+            margin-left: 2px;
+        }
+
+        .myimg {
+            width: 50px;
+            height: 50px;
+            border: 2px solid white;
+            border-radius: 25px;
+        }
+
+        h1 {
+            font-weight: bold;
+            color: #198754;
+        }
+
+        .form-container {
+            background-color: #212529;
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-custom {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f8576f, #f39334);
+            border: none;
+            color: white;
+            transition: background 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(135deg, #f39334, #f8576f);
+        }
+
+        .toggle-button {
+            background: linear-gradient(to right, #b31217, #e52d27);
+            color: white;
+            font-weight: bold;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 15px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .toggle-button:hover {
+            transform: scale(1.05);
+        }
+
+        in .result-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .modal-content {
+            border-radius: 15px;
+        }
+
+        .modal-header {
+            background-color: #212529;
+            color: white;
+        }
+
+        .custom-navbar {
+            background-color: #212529 !important;
+        }
+
+        #chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            max-height: 400px;
+            background: #1d1f21;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chat-header {
+            background: #198754;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #chat-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        #chat-input {
+            display: flex;
+            border-top: 1px solid #444;
+        }
+
+        #chat-input input {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            background: #2c2f33;
+            color: white;
+        }
+
+        #chat-input button {
+            background: #198754;
+            border: none;
+            color: white;
+            padding: 0 15px;
+        }
+
+        #wellness-bubble {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #157347;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            font-weight: 500;
+            max-width: 350px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            animation: fadeInUp 0.5s ease-out;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            line-height: 1.4;
+            width: auto;
+            height: auto;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #bubble-icon {
+            font-size: 20px;
+            transition: font-size 0.3s;
+        }
+
+        #bubble-tip {
+            flex: 1;
+            white-space: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #close-bubble {
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            color: white;
+        }
+
+        #wellness-bubble.minimized {
+            width: 50px;
+            height: 50px;
+            padding: 0;
+            border-radius: 50%;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            overflow: hidden;
+            background-color: #157347;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #wellness-bubble.minimized #bubble-tip,
+        #wellness-bubble.minimized #close-bubble {
+            display: none;
+        }
+
+        #wellness-bubble.minimized #bubble-icon {
+            font-size: 24px;
+            margin: 0;
+            color: white;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .navbar-nav .nav-link {
+            transition: all 0.2s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #20c997 !important;
+            transform: scale(1.05);
+        }
+
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container-fluid">
+
+            <!-- Logo and Title -->
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{{ url_for('static', filename='img.png') }}" alt="Logo" height="40" class="me-2">
+                <span class="fs-4 fw-bold text-light">Swasthya Saathi</span>
+            </a>
+
+            <!-- Mobile toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Links and Re-Search -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active fw-semibold" href="#">🏠 Home</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="/blog">📰 Blog</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="/contact">📞 Contact</a></li>
+                    <li class="nav-item"><a class="nav-link fw-semibold" href="/about">ℹ️ About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('consultancy') }}" target="_blank">🧑‍💼
+                            Consultancy</a></li>
+                </ul>
+                <form class="d-flex ms-3" method="POST" action="/predict">
+                    <button class="btn btn-outline-success fw-semibold" type="submit">🔁 Re-Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <h1 class="mt-4 text-center">स्वास्थ्य Saathi</h1>
+
+    <div class="container mt-4 form-container">
+        <form id="symptomForm" action="/predict" method="post" onsubmit="return validateForm()">
+            <div class="form-group mb-3">
+                <label for="symptoms">Select Symptoms:</label>
+                <input type="text" class="form-control" id="symptoms" name="symptoms"
+                    placeholder="Type symptoms such as itching, headache, vomiting, etc.">
+            </div>
+
+            <button type="button" id="startSpeechRecognition" class="btn btn-outline-light mb-3"
+                style="border-radius: 20px;" onclick="startRecognition()">🎤 Voice Search</button>
+
+            <div id="transcription" class="mb-3 text-light"></div>
+            {% if message %}
+            <div class="alert alert-info">{{ message }}</div>
+            {% endif %}
+
+            <button type="submit" class="btn-custom">Predict</button>
+        </form>
+    </div>
+
+    {% if input_summary %}
+    <div class="container mt-3">
+        <div class="alert alert-success text-center" style="font-size: 1.1rem;">
+            {{ input_summary }}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if predicted_disease %}
+    <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#diseaseModal">🩺 Disease</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#descriptionModal">📘
+            Description</button>
+        <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#precautionModal">⚠️
+            Precaution</button>
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#medicationsModal">💊 Medications</button>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#workoutsModal">🏋️‍♀️ Workouts</button>
+        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#dietsModal">🥗 Diets</button>
+
+        <!-- View Medical Report Button -->
+        <form method="POST" action="/view_report" class="d-inline" target="_blank">
+            <input type="hidden" name="predicted_disease" value="{{ predicted_disease }}">
+            <input type="hidden" name="user_symptoms" value="{{ input_summary }}">
+            <input type="hidden" name="dis_des" value="{{ dis_des }}">
+            <input type="hidden" name="my_precautions" value="{{ my_precautions|join(', ') }}">
+            <input type="hidden" name="medications" value="{{ medications|join(', ') }}">
+            <input type="hidden" name="my_diet" value="{{ my_diet|join(', ') }}">
+            <input type="hidden" name="workout" value="{{ workout|join(', ') }}">
+            <button type="submit" class="btn btn-dark">📄 Medical Report</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Reusable Modals -->
+    {% set modals = [
+    ('diseaseModal', 'Predicted Disease', predicted_disease),
+    ('descriptionModal', 'Description', dis_des),
+    ('precautionModal', 'Precaution', my_precautions),
+    ('medicationsModal', 'Medications', medications),
+    ('workoutsModal', 'Workouts', workout),
+    ('dietsModal', 'Diets', my_diet)
+    ] %}
+
+    {% for modal_id, modal_title, content in modals %}
+    <div class="modal fade" id="{{ modal_id }}" tabindex="-1" aria-labelledby="{{ modal_id }}Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content text-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="{{ modal_id }}Label">{{ modal_title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% if content is string %}
+                    <p>{{ content }}</p>
+                    {% else %}
+                    <ul>
+                        {% for item in content %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div id="wellness-bubble" class="minimized" onclick="toggleBubble()">
+        <span id="bubble-icon">💡</span>
+        <span id="bubble-tip">Loading tip...</span>
+        <span id="close-bubble" onclick="closeBubble(event)">×</span>
+    </div>
+
+    <section class="py-5 bg-light" id="health-highlights">
+        <div class="container">
+            <h2 class="text-center fw-bold mb-5">🌟 Health Highlights</h2>
+            <div class="row g-4">
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100 border-start border-4 border-success card-hover">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-success">🦟 Dengue Prevention</h5>
+                            <p class="card-text">Avoid stagnant water around your home, wear full-sleeve clothes, and
+                                use mosquito
+                                repellents. Seek medical help if you experience high fever with joint pain or rashes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100 border-start border-4 border-warning card-hover">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-warning">💓 Hypertension Awareness</h5>
+                            <p class="card-text">Monitor your blood pressure regularly. Eat potassium-rich fruits,
+                                reduce salt, and
+                                engage in daily 30-minute brisk walks. Consult your doctor for medication if needed.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100 border-start border-4 border-danger card-hover">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-danger">🤧 Flu Season Tips</h5>
+                            <p class="card-text">Boost immunity with vitamin C-rich foods. Wash hands often, avoid
+                                touching face
+                                frequently, and consider flu vaccination if you're in a high-risk group.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-light" id="wellness-resources">
+        <div class="container">
+            <h2 class="text-center fw-bold mb-5">📚 Wellness Resources</h2>
+            <div class="row g-4">
+                <!-- Health Articles -->
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100 border-start border-4 border-success card-hover">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-success">📖 Health Articles</h5>
+                            <p class="card-text">Explore a wide range of health articles to stay informed about
+                                nutrition, fitness,
+                                mental health, and more.</p>
+                            <ul>
+                                <li><a href="https://www.healthline.com/nutrition" target="_blank"
+                                        class="text-success">Healthy Eating
+                                        in Real Life</a></li>
+                                <li><a href="https://www.thehealthsite.com/fitness/nutrition/" target="_blank"
+                                        class="text-success">Nutrition Tips</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yoga & Meditation -->
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100 border-start border-4 border-info card-hover">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-info">🧘‍♀️ Yoga & Meditation</h5>
+                            <p class="card-text">Discover yoga and meditation practices that promote relaxation, reduce
+                                stress, and
+                                improve mental clarity.</p>
+                            <ul>
+                                <li><a href="https://www.everydayyoga.com/blogs/guides/yoga-meditation" target="_blank"
+                                        class="text-info">Yoga & Meditation Guides</a></li>
+                                <li><a href="https://arohanyoga.com/blog/meditation-vs-yoga-exploring-differences-benefits-and-harmony/"
+                                        target="_blank" class="text-info">Meditation vs Yoga</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Products -->
+                <div class="col-md-4">
+                    <div class="card shadow-sm h-100 border-start border-4 border-primary card-hover">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-primary">🛒 Health Products</h5>
+                            <p class="card-text">Browse recommended health products, supplements, and tools to support
+                                your wellness
+                                journey.</p>
+                            <ul>
+                                <li><a href="https://www.healthline.com/nutrition/27-health-and-nutrition-tips"
+                                        target="_blank" class="text-primary">27 Natural Health and Nutrition Tips</a>
+                                </li>
+                                <li><a href="https://www.thehealthsite.com/news/" target="_blank"
+                                        class="text-primary">Latest Health
+                                        News</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row justify-content-between align-items-center">
+
+                <!-- Section 1: Logo and Site Info -->
+                <div class="col-md-3 text-center text-md-start mb-3">
+                    <img src="{{ url_for('static', filename='img.png') }}" alt="Swasthya Saathi Logo"
+                        class="img-fluid mb-3" style="max-width: 100px;">
+                    <h5 class="fw-bold text-info mb-2" style="font-size: 1.2rem;">स्वास्थ्य Saathi</h5>
+                    <p class="text-success mb-1" style="font-size: 0.9rem;">Inspiring Healthier Lifestyles</p>
+                </div>
+
+                <!-- Section 2: Contact Information -->
+                <div class="col-md-3 text-center text-md-start mb-3">
+                    <h6 class="fw-bold text-info mb-3" style="font-size: 1.1rem;">Contact Us</h6>
+                    <ul class="list-unstyled text-light">
+                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>🗺️ Swasthya Saathi, Delhi, India
+                        </li>
+                        <li class="mb-2"><i class="fas fa-envelope me-2"></i>✉️ swasthyasaathi172@gmail.com</li>
+                        <li class="mb-2"><i class="fas fa-phone-alt me-2"></i>📞 0347-7155035</li>
+                    </ul>
+                </div>
+
+                <!-- Section 3: Author Information -->
+                <div class="col-md-3 text-center text-md-start">
+                    <h6 class="fw-bold text-info mb-3" style="font-size: 1.1rem;">About the Author</h6>
+                    <p class="text-light mb-2" style="font-size: 1rem;"><small class="text-warning d-block mb-1"
+                            style="font-size: 0.9rem; font-weight: bold;">Tushar (BCA'25)</small>BCA'25 at DSEU Dwarka,
+                        is passionate
+                        about technology and health. He created this platform to help people better manage their health.
+                    </p>
+                    <div class="author-info mt-2">
+
+                        <small class="text-secondary d-block" style="font-size: 0.85rem;">&copy; 2025 Swasthya Saathi.
+                            All rights
+                            reserved.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function startRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Your browser does not support speech recognition.");
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.start();
+
+            recognition.onstart = function () {
+                console.log("🎙️ Voice recognition started...");
+            };
+
+            recognition.onresult = function (event) {
+                const transcript = event.results[0][0].transcript.toLowerCase().trim();
+                const inputField = document.getElementById("symptoms");
+
+                if (inputField.value.trim() !== "") {
+                    inputField.value += ", " + transcript;
+                } else {
+                    inputField.value = transcript;
+                }
+
+                console.log("Recognized:", transcript);
+            };
+
+            recognition.onerror = function (event) {
+                console.error("Speech recognition error:", event.error);
+                alert("Speech recognition failed: " + event.error);
+            };
+
+            recognition.onend = function () {
+                console.log("🎤 Voice recognition ended.");
+            };
+        }
+
+        function validateForm() {
+            const symptomInput = document.getElementById("symptoms").value.trim();
+            if (symptomInput === "") {
+                alert("🔍 Please enter your symptoms to get a prediction!");
+                return false;
+            }
+            return true;
+        }
+
+        const bubbleTips = [
+            "Drink 2L of water daily.💧",
+            "Walk 30 minutes daily.🚶‍♂️",
+            "Sleep 7–8 hours nightly.🛌",
+            "Eat fresh fruits & veggies.🥗",
+            "Breathe deeply to relax.🧘‍♀️",
+            "Avoid screens before bed.📴",
+            "Get morning sunlight daily.☀️",
+            "Wash hands frequently.🧼"
+        ];
+
+        function changeBubbleTip() {
+            const tip = bubbleTips[Math.floor(Math.random() * bubbleTips.length)];
+            const tipElement = document.getElementById("bubble-tip");
+            if (tipElement) tipElement.textContent = tip;
+        }
+
+        function toggleBubble() {
+            const bubble = document.getElementById("wellness-bubble");
+            if (bubble.classList.contains("minimized")) {
+                bubble.classList.remove("minimized");
+            }
+        }
+
+        function closeBubble(event) {
+            event.stopPropagation(); // Don't expand on close
+            document.getElementById("wellness-bubble").classList.add("minimized");
+        }
+
+        function minimizeBubble() {
+            document.getElementById("wellness-bubble").classList.add("minimized");
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            changeBubbleTip();
+            setInterval(changeBubbleTip, 5000);
+            minimizeBubble(); // Always start minimized
+
+            // Hook to your predict button
+            const predictBtn = document.querySelector(".btn-custom");
+            if (predictBtn) {
+                predictBtn.addEventListener("click", () => {
+                    minimizeBubble();
+                });
+            }
+        });
+
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
