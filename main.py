@@ -228,7 +228,7 @@ def init_db():
     conn.commit()
     conn.close()
 
-init_db()  # Only run once, then remove or comment it out
+# init_db()  # Only run once, then remove or comment it out
 
 @app.route('/about')
 def about():
