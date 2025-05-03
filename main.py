@@ -192,6 +192,8 @@ def download_report():
 @app.route('/consultancy', methods=['GET', 'POST'])
 def consultancy():
     if request.method == 'POST':
+        import os
+        print("Database path:", os.path.abspath('consultancy.db'))  # <-- Add this here
         name = request.form['name']
         email = request.form['email']
         phone = request.form['phone']
