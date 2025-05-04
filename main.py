@@ -188,32 +188,42 @@ def download_report():
         download_name='Swasthya_Saathi_Report.pdf'
     )
 
-# form
+import os
+import csv
+import sqlite3
+from datetime import datetime
+
+USE_SQLITE = os.environ.get("USE_SQLITE", "true").lower() == "true"
+
 @app.route('/consultancy', methods=['GET', 'POST'])
 def consultancy():
     if request.method == 'POST':
-        import os
-        print("Database path:", os.path.abspath('consultancy.db'))  # <-- Add this here
         name = request.form['name']
         email = request.form['email']
         phone = request.form['phone']
         location = request.form['location']
         concern = request.form['concern']
 
-        conn = sqlite3.connect('consultancy.db')
-        c = conn.cursor()
-        c.execute("INSERT INTO consultancy (name, email, phone, location, concern) VALUES (?, ?, ?, ?, ?)",
-                  (name, email, phone, location, concern))
-        conn.commit()
-        conn.close()
+        if USE_SQLITE:
+            # Local development: Use SQLite
+            conn = sqlite3.connect('consultancy.db')
+            c = conn.cursor()
+            c.execute("INSERT INTO consultancy (name, email, phone, location, concern) VALUES (?, ?, ?, ?, ?)",
+                      (name, email, phone, location, concern))
+            conn.commit()
+            conn.close()
+        else:
+            # Use CSV logging for production environment
+            with open('consultancy_logs.csv', 'a', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow([datetime.now(), name, email, phone, location, concern])
 
         flash("Your consultancy request has been submitted!", "success")
         return redirect(url_for('consultancy'))
 
     return render_template('consultancy.html')
 
-
-# form
+# Function to initialize the database, only run once
 def init_db():
     conn = sqlite3.connect('consultancy.db')
     c = conn.cursor()
@@ -230,7 +240,9 @@ def init_db():
     conn.commit()
     conn.close()
 
-init_db()  # Only run once, then remove or comment it out
+# Call init_db() to initialize the database
+init_db()  # Run this function only once to create the database table
+
 
 @app.route('/about')
 def about():
